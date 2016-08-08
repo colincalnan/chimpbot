@@ -1,0 +1,30 @@
+{
+  "name": "chimpbot",
+  "version": "1.0.0",
+  "description": "A bot to allow you to find a charity or fundraiser",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colincalnan/chimpbot.git"
+  },
+  "keywords": [
+    "bot",
+    "facebook",
+    "messgener"
+  ],
+  "author": "Colin Calnan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/colincalnan/chimpbot/issues"
+  },
+  "homepage": "https://github.com/colincalnan/chimpbot#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "request": "^2.74.0"
+  }
+}
