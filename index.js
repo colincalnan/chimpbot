@@ -100,8 +100,8 @@ function searchCharities(recipientId, text) {
   // When they choose one, then ask them how much they want to donate, $10, $20 or $50
 
   request({
-      url: 'https://chimp.net/api/v1/search_suggest',
-      qs: {search: text, include_links: true},
+      url: 'https://chimp.net/search_suggest',
+      qs: {search: text, include_links: true, include_meta: true},
       method: 'GET'
   }, function(error, response, body) {
       if (error) {
