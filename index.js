@@ -19,9 +19,10 @@ app.post('/webhook', function (req, res) {
     for (i = 0; i < events.length; i++) {
         var event = events[i];  
         if (event.message && event.message.text) {
-            if (!kittenMessage(event.sender.id, event.message.text)) {
-                sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
-            }
+            // if (!kittenMessage(event.sender.id, event.message.text)) {
+            //     sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
+            // }
+            searchCharities(event.sender.id, event.message.text);
         } else if (event.postback) {
           console.log("Postback received: " + JSON.stringify(event.postback));
         }
@@ -89,5 +90,26 @@ function kittenMessage(recipientId, text) {
     }
     
     return false;
-    
 };
+
+function searchCharities(recipientId, text) {
+  // Sanitize text
+  // Hit Chimp Search endpoint
+  // Pick top 3 Charities and send back as message with option to pick the next 3
+  // Also give an option to search again
+  // When they choose one, then ask them how much they want to donate, $10, $20 or $50
+
+  request({
+      url: 'https://chimp.net/api/v1/search_suggest',
+      qs: {search: text, include_links: true},
+      method: 'GET'
+  }, function(error, response, body) {
+      if (error) {
+          console.log('Error sending message: ', error);
+      } else if (response.body.error) {
+          console.log('Error: ', response.body.error);
+      }
+      
+      console.log('Response', JSON.stringify(response));
+  });
+}
