@@ -111,7 +111,7 @@ function searchCharities(recipientId, text) {
       } else if (response.body.error) {
           console.log('Error: ', response.body.error);
       }
-      let charities = body.values
+      var charities = body.values;
       console.log('charities', charities);
       message = {
           "attachment": {
