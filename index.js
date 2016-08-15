@@ -142,5 +142,7 @@ function searchCharities(recipientId, text) {
               }
           }
         };
+        
+        sendMessage(recipientId, message);
   });
 }
