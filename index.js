@@ -16,6 +16,7 @@ app.get('/', function (req, res) {
 // handler receiving messages
 app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
+    console.log("events", events);
     for (i = 0; i < events.length; i++) {
         var event = events[i];  
         if (event.message && event.message.text) {
@@ -102,14 +103,44 @@ function searchCharities(recipientId, text) {
   request({
       url: 'https://chimp.net/search_suggest',
       qs: {search: text, include_links: true, include_meta: true},
-      method: 'GET'
+      method: 'GET',
+      json: {}
   }, function(error, response, body) {
       if (error) {
           console.log('Error sending message: ', error);
       } else if (response.body.error) {
           console.log('Error: ', response.body.error);
       }
-      
-      console.log('Response', JSON.stringify(response));
+      let charities = body.values
+      console.log('charities', charities);
+      message = {
+          "attachment": {
+              "type": "template",
+              "payload": {
+                  "template_type": "generic",
+                  "elements": [{
+                      "title": "We found some charities",
+                      // "subtitle": "Cute kitten picture",
+                      // "image_url": imageUrl ,
+                      "buttons": [{
+                          "type": "web_url",
+                          "url": charities[0].link,
+                          "title": charities[0].name,
+                          }, {
+                          "type": "web_url",
+                          "url": charities[1].link,
+                          "title": charities[1].name,
+                          }, {
+                          "type": "web_url",
+                          "url": charities[2].link,
+                          "title": charities[3].name,
+                          // "type": "postback",
+                          // "title": "I like this",
+                          // "payload": "User " + recipientId + " likes kitten " + imageUrl,
+                      }]
+                  }]
+              }
+          }
+        };
   });
 }
