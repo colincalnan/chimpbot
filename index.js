@@ -13,6 +13,15 @@ app.get('/', function (req, res) {
 });
 
 // Facebook Webhook
+app.get('/webhook', function (req, res) {
+    if (req.query['hub.verify_token'] === 'chimpbot_verify_token') {
+        res.send(req.query['hub.challenge']);
+    } else {
+        res.send('Invalid verify token');
+    }
+});
+
+// Facebook Webhook
 // handler receiving messages
 app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
@@ -111,34 +120,33 @@ function searchCharities(recipientId, text) {
       } else if (response.body.error) {
           console.log('Error: ', response.body.error);
       }
-      var charities = body.values;
-      console.log('charities', charities);
+      var charities = body.values
+      var elements = []
+      for(var i = 0; i < charities.length; i++) {
+        var link = charities[i].link.split('/');
+        console.log('link', link);
+        elements[i] = {
+          "title": charities[i].name,
+          "subtitle": charities[i].meta.join(" "),
+          "image_url": "https://d1sfxtpe5l0d0y.cloudfront.net/assets/avatars/chimp-icon-charity.png" ,
+          "buttons": [{
+              "type": "web_url",
+              "url": "http://chimp.net" + charities[i].link,
+              "title": "See Charity Page",
+          }, {
+              "type": "web_url",
+              "url": "http://chimp.net/send/to/charity/" + link[2] + '/gift/new',
+              "title": "Donate to Charity",
+          }]
+        };
+      }
+      console.log(elements);
       message = {
           "attachment": {
               "type": "template",
               "payload": {
                   "template_type": "generic",
-                  "elements": [{
-                      "title": "We found some charities",
-                      // "subtitle": "Cute kitten picture",
-                      // "image_url": imageUrl ,
-                      "buttons": [{
-                          "type": "web_url",
-                          "url": charities[0].link,
-                          "title": charities[0].name,
-                          }, {
-                          "type": "web_url",
-                          "url": charities[1].link,
-                          "title": charities[1].name,
-                          }, {
-                          "type": "web_url",
-                          "url": charities[2].link,
-                          "title": charities[3].name,
-                          // "type": "postback",
-                          // "title": "I like this",
-                          // "payload": "User " + recipientId + " likes kitten " + imageUrl,
-                      }]
-                  }]
+                  "elements": elements
               }
           }
         };
